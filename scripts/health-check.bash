@@ -1,22 +1,33 @@
 #!/bin/bash
 #
+# health check
 #
 
-BE_SVC_URL=https://backend.dev.simpos.com.tw/
+BE_SVC_URL=https://backend.dev.simpos.com.tw/version
+DSE_SVC_URL=https://dse.dev.simpos.com.tw/api/ready
 DB_HEALTHZ=https://backend.dev.simpos.com.tw/healthz
+SOME_SVC_URL=https://dse.dev.simpos.com.tw/api/ready1
+URLS=("$BE_SVC_URL" "$DSE_SVC_URL" "$DB_HEALTHZ" "$SOME_SVC_URL")
 
-BE_STATUS=$(curl -s -X GET "$BE_SVC_URL" | jq -r '.status')
-DB_STATUS=$(curl -s -X GET "$DB_HEALTHZ" | jq -r '.status')
+ERRORS=()
 
-STATUSES=("$DB_STATUS" "$BE_STATUS")
-
-# 檢查每個狀態，如果其中一個不是 "true"，則輸出相應的錯誤消息
-for index in "${!STATUSES[@]}"; do
-	STATUS="${STATUSES[index]}"
-	if [ "$STATUS" != "ok" ]; then
-		echo ""
-		echo "Error: STATUSES[$index] is not ok"
-		echo ""
-		exit 1
+echo "start health checking...."
+# 檢查 service 的 health
+for index in "${!URLS[@]}"; do
+	URL="${URLS[index]}"
+	res=$(curl -s -X GET "$URL")
+	status=$(echo "$res" | jq -r '.status')
+	if [ "$status" != "ok" ]; then
+		ERRORS+=("Error: '$URL' is not ok, response: $res")
 	fi
 done
+
+echo ""
+
+# 印出錯誤
+if [ "${#ERRORS[@]}" -gt 0 ]; then
+	for ERROR in "${ERRORS[@]}"; do
+		echo "$ERROR"
+	done
+	exit 1
+fi
