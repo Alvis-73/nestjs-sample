@@ -1,0 +1,28 @@
+name: PR TEST
+
+on:
+  push:
+    tags:
+      - 'prtest'
+
+  workflow_dispatch:
+    inputs:
+      type:
+        description: 'action type'
+        required: true
+        default: 'manual deploy'
+      description:
+        description: 'description'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: health checkout
+        run: yarn health-checkout
