@@ -25,4 +25,4 @@ jobs:
         uses: actions/checkout@v2
 
       - name: health checkout
-        run: yarn health-checkout
+        run: yarn health-check
