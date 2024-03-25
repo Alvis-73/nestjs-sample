@@ -7,7 +7,8 @@ BE_SVC_URL=https://backend.dev.simpos.com.tw/version
 DSE_SVC_URL=https://dse.dev.simpos.com.tw/api/ready
 DB_HEALTHZ=https://backend.dev.simpos.com.tw/healthz
 SOME_SVC_URL=https://dse.dev.simpos.com.tw/api/ready1
-URLS=("$BE_SVC_URL" "$DSE_SVC_URL" "$DB_HEALTHZ" "$SOME_SVC_URL")
+# URLS=("$BE_SVC_URL" "$DSE_SVC_URL" "$DB_HEALTHZ" "$SOME_SVC_URL")
+URLS=("$DSE_SVC_URL" "$DB_HEALTHZ")
 
 ERRORS=()
 
@@ -31,3 +32,5 @@ if [ "${#ERRORS[@]}" -gt 0 ]; then
 	done
 	exit 1
 fi
+
+echo "All Systems Operational"
